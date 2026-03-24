@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FinanceIA — Votre banque intelligente</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">💳</div>
+    <div class="logo-text">Finance<span>IA</span></div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section-label">Principal</div>
+    <button class="nav-item active" data-page="dashboard"><span class="nav-icon">📊</span><span>Tableau de bord</span></button>
+    <button class="nav-item" data-page="transactions"><span class="nav-icon">💸</span><span>Transactions</span></button>
+    <button class="nav-item" data-page="budget"><span class="nav-icon">📅</span><span>Budget prévisionnel</span></button>
+    <div class="nav-section-label" style="margin-top:12px;">IA & Conseils</div>
+    <button class="nav-item" data-page="conseiller"><span class="nav-icon">🤖</span><span>Conseiller IA</span></button>
+    <button class="nav-item" data-page="recommandations"><span class="nav-icon">💡</span><span>Recommandations</span></button>
+    <button class="nav-item" data-page="aides"><span class="nav-icon">🏛️</span><span>Aides & Subventions</span></button>
+    <div class="nav-section-label" style="margin-top:12px;">Compte</div>
+    <button class="nav-item" data-page="compte"><span class="nav-icon">⚙️</span><span>Paramètres du compte</span></button>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="avatarInitials">MF</div>
+    <div class="user-info"><div class="user-name" id="sidebarName">Marie Fontaine</div><div class="user-role">Compte Courant</div></div>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="topbar"><div><div class="topbar-title" id="topbarTitle">Tableau de bord</div><div class="topbar-date" id="topbarDate"></div></div><div class="topbar-actions"><span class="badge-notif" id="topbarBalance">Solde : 4 250 €</span></div></div>
+
+  <div class="page active" id="page-dashboard">
+    <div class="stat-grid">
+      <div class="stat-card blue"><div class="stat-label">Solde disponible</div><div class="stat-value" id="statSolde">4 250 €</div><div class="stat-sub">Compte courant</div></div>
+      <div class="stat-card green"><div class="stat-label">Revenus du mois</div><div class="stat-value" id="statRevenus">2 800 €</div><div class="stat-trend up">↑ +2.4% vs mois dernier</div></div>
+      <div class="stat-card red"><div class="stat-label">Dépenses du mois</div><div class="stat-value" id="statDepenses">1 870 €</div><div class="stat-trend down" id="statTrendDepenses">↑ +5.1% vs mois dernier</div></div>
+      <div class="stat-card amber"><div class="stat-label">Épargne mensuelle</div><div class="stat-value" id="statEpargne">930 €</div><div class="stat-sub" id="statEpargneRate">Taux d'épargne : 33%</div></div>
+    </div>
+
+    <div class="grid-3-1">
+      <div class="card"><div class="card-header"><div class="card-title">Flux financiers — 6 derniers mois</div></div><div class="card-body"><div style="display:flex; gap:14px; margin-bottom:8px;"><div style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--gray-600);"><div style="width:12px;height:12px;background:var(--blue-500);border-radius:3px;"></div> Revenus</div><div style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--gray-600);"><div style="width:12px;height:12px;background:var(--blue-200);border-radius:3px;"></div> Dépenses</div></div><div class="chart-bars" id="chartBars"></div><div style="display:flex; gap:10px;" id="chartLabels"></div></div></div>
+      <div class="card"><div class="card-header"><div class="card-title">Par catégorie</div></div><div class="card-body"><div class="category-list" id="catList"></div></div></div>
+    </div>
+
+    <div class="card"><div class="card-header"><div class="card-title">Dernières transactions</div><button class="btn btn-outline" style="font-size:12px; padding:6px 14px;" onclick="navigate('transactions')">Voir tout</button></div><div class="card-body-pt0" style="padding-top:12px;"><div id="lastTx"></div></div></div>
+  </div>
+
+  <div class="page" id="page-transactions">
+    <div class="card" style="margin-bottom:20px;"><div class="card-body"><div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;"><input class="form-input" id="txSearch" placeholder="🔍  Rechercher…" style="flex:1; min-width:200px;" oninput="renderTransactions()" /><select class="form-input" id="txFilter" style="max-width:180px;" onchange="renderTransactions()"><option value="">Toutes catégories</option><option value="Logement">Logement</option><option value="Alimentaire">Alimentaire</option><option value="Transport">Transport</option><option value="Loisirs">Loisirs</option><option value="Santé">Santé</option><option value="Revenus">Revenus</option></select></div></div></div>
+    <div class="card"><div class="card-body" style="padding:0;"><table class="tx-table" id="txTable"><thead><tr><th>Date</th><th>Description</th><th>Catégorie</th><th>Montant</th></tr></thead><tbody id="txBody"></tbody></table></div></div>
+  </div>
+
+  <div class="page" id="page-budget">
+    <div class="alert alert-info">💡 Le budget prévisionnel est calculé automatiquement sur la base de vos dépenses des 6 derniers mois.</div>
+    <div class="grid-2"><div class="card"><div class="card-header"><div class="card-title">Budget mensuel — suivi</div></div><div class="card-body"><div id="budgetBars"></div></div></div><div class="card"><div class="card-header"><div class="card-title">Score financier</div></div><div class="card-body" style="text-align:center; padding-top:32px;"><div style="font-size:72px; font-family:'DM Serif Display', serif; color:var(--blue-600);" id="scoreVal">78</div><div style="font-size:14px; color:var(--gray-400); margin-bottom:16px;">/ 100 — Bonne santé financière</div><div style="font-size:13px; color:var(--gray-600); line-height:1.6;" id="scoreMsg"></div></div></div></div>
+    <div class="card"><div class="card-header"><div class="card-title">Projection sur 3 mois</div></div><div class="card-body"><div class="forecast-grid" id="forecastGrid"></div></div></div>
+  </div>
+
+  <div class="page" id="page-conseiller">
+    <div class="api-banner"><div class="api-banner-icon">🔑</div><div class="api-banner-text"><div class="api-banner-title">Clé API Anthropic requise</div><div class="api-banner-desc">Pour activer le conseiller IA, entrez votre clé API Claude. Elle n'est jamais stockée en dehors de votre navigateur.</div></div><input type="password" class="api-key-input" id="apiKeyInput" placeholder="sk-ant-…" /><button class="btn btn-primary" onclick="saveApiKey()">Enregistrer</button></div>
+    <div class="card"><div class="card-header"><div class="card-title">🤖 Conseiller IA Bancaire</div></div><div class="card-body"><div class="quick-btns"><button class="quick-btn" onclick="askQuick('Comment puis-je réduire mes dépenses alimentaires ?')">Réduire mes dépenses</button><button class="quick-btn" onclick="askQuick('Devrais-je ouvrir un livret A ?')">Ouvrir un livret A ?</button><button class="quick-btn" onclick="askQuick('Comment optimiser mon budget mensuel ?')">Optimiser mon budget</button><button class="quick-btn" onclick="askQuick('Quel est mon taux d\'épargne idéal ?')">Taux d'épargne idéal</button><button class="quick-btn" onclick="askQuick('Quelles aides de l\'État puis-je obtenir ?')">Aides de l'État</button></div><div class="ai-chat" id="aiMessages"></div><div class="ai-input-row"><input class="ai-input" id="aiInput" placeholder="Posez votre question au conseiller IA…" onkeydown="if(event.key==='Enter') sendAI()" /><button class="btn btn-primary" id="aiSendBtn" onclick="sendAI()">Envoyer</button></div></div></div>
+  </div>
+
+  <div class="page" id="page-recommandations">
+    <div class="alert alert-info" id="recoAlert">✨ Recommandations personnalisées basées sur votre profil financier.</div>
+    <div class="card"><div class="card-header"><div class="card-title">💡 Placements recommandés</div></div><div class="card-body"><div class="reco-grid" id="recoInvest"></div></div></div>
+    <div class="card" style="margin-top:20px;"><div class="card-header"><div class="card-title">🏦 Épargne recommandée</div></div><div class="card-body"><div class="reco-grid" id="recoEpargne"></div></div></div>
+  </div>
+
+  <div class="page" id="page-aides">
+    <div class="alert alert-warn">⚠️ Les informations sur les aides sont fournies à titre indicatif. Vérifiez votre éligibilité sur <strong>service-public.fr</strong></div>
+    <div id="aidesContent"></div>
+  </div>
+
+  <div class="page" id="page-compte">
+    <div id="saveAlert" style="display:none;" class="alert alert-success">✅ Modifications enregistrées avec succès !</div>
+    <div class="card"><div class="card-header"><div class="card-title">⚙️ Paramètres du compte</div></div><div class="card-body"><div class="form-section-title">Informations personnelles</div><div class="settings-grid"><div class="form-group"><label class="form-label">Prénom</label><input class="form-input" id="settPrenom" value="Marie" /></div><div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="settNom" value="Fontaine" /></div><div class="form-group"><label class="form-label">Email</label><input class="form-input" id="settEmail" type="email" value="marie.fontaine@email.fr" /></div><div class="form-group"><label class="form-label">Téléphone</label><input class="form-input" id="settTel" value="06 12 34 56 78" /></div></div>
+      <div class="form-section-title">Situation financière</div><div class="settings-grid"><div class="form-group"><label class="form-label">Solde du compte (€)</label><input class="form-input" id="settSolde" type="number" value="4250" /><div class="form-hint">Modifiez ce montant pour voir les recommandations évoluer</div></div><div class="form-group"><label class="form-label">Revenus mensuels nets (€)</label><input class="form-input" id="settRevenus" type="number" value="2800" /></div><div class="form-group"><label class="form-label">Loyer / Remboursement (€)</label><input class="form-input" id="settLoyer" type="number" value="750" /></div><div class="form-group"><label class="form-label">Objectif d'épargne mensuel (€)</label><input class="form-input" id="settObjectifEpargne" type="number" value="500" /></div></div>
+      <div class="form-section-title">Profil de risque & objectifs</div><div class="settings-grid"><div class="form-group"><label class="form-label">Profil investisseur</label><select class="form-input" id="settProfil"><option value="prudent">Prudent</option><option value="equilibre" selected>Équilibré</option><option value="dynamique">Dynamique</option></select></div><div class="form-group"><label class="form-label">Situation familiale</label><select class="form-input" id="settFamille"><option value="celibataire">Célibataire</option><option value="couple">En couple</option><option value="famille" selected>Famille avec enfants</option></select></div><div class="form-group"><label class="form-label">Objectif principal</label><select class="form-input" id="settObjectif"><option value="retraite">Préparer la retraite</option><option value="immobilier" selected>Achat immobilier</option><option value="epargne">Constituer une épargne</option><option value="voyage">Voyage / Projet</option></select></div><div class="form-group"><label class="form-label">Horizon d'investissement</label><select class="form-input" id="settHorizon"><option value="court">Court terme (< 2 ans)</option><option value="moyen" selected>Moyen terme (2–5 ans)</option><option value="long">Long terme (> 5 ans)</option></select></div></div>
+    </div><div class="save-bar"><button class="btn btn-outline" onclick="resetSettings()">Annuler</button><button class="btn btn-primary" onclick="saveSettings()">💾 Enregistrer les modifications</button></div></div>
+  </div>
+</div>
+
+<script src="script.js" defer></script>
+</body>
+</html>
