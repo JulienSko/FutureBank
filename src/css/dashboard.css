@@ -1,0 +1,96 @@
+/* ─── STAT CARDS ──────────────────────────────────────── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+}
+.stat-card.blue::before  { background: var(--blue-600); }
+.stat-card.green::before { background: var(--green); }
+.stat-card.red::before   { background: var(--red); }
+.stat-card.amber::before { background: var(--amber); }
+
+.stat-label { font-size: 12px; color: var(--gray-400); font-weight: 600; text-transform: uppercase; letter-spacing: .6px; margin-bottom: 8px; }
+.stat-value { font-size: 26px; font-weight: 700; color: var(--blue-950); font-family: 'DM Serif Display', serif; }
+.stat-sub   { font-size: 12px; color: var(--gray-400); margin-top: 4px; }
+.stat-trend { font-size: 12px; font-weight: 600; margin-top: 4px; }
+.stat-trend.up   { color: var(--green); }
+.stat-trend.down { color: var(--red); }
+
+/* ─── CHART ───────────────────────────────────────────── */
+.chart-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  height: 120px;
+  margin: 16px 0 8px;
+}
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.bar {
+  width: 100%;
+  border-radius: 6px 6px 0 0;
+  min-height: 4px;
+  transition: height .5s cubic-bezier(.4,0,.2,1);
+  cursor: pointer;
+}
+.bar.income  { background: var(--blue-500); }
+.bar.expense { background: var(--blue-200); }
+.bar:hover   { filter: brightness(1.1); }
+.bar-label   { font-size: 11px; color: var(--gray-400); font-weight: 500; }
+
+/* ─── EXPENSE LIST ────────────────────────────────────── */
+.expense-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+.expense-item:last-child { border-bottom: none; }
+.expense-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.expense-details  { flex: 1; }
+.expense-name     { font-size: 14px; font-weight: 600; color: var(--blue-950); }
+.expense-cat      { font-size: 12px; color: var(--gray-400); }
+.expense-amount   { font-size: 14px; font-weight: 700; }
+.expense-amount.neg { color: var(--red); }
+.expense-amount.pos { color: var(--green); }
+
+/* ─── CATEGORY BARS ───────────────────────────────────── */
+.category-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+.cat-row       { display: flex; flex-direction: column; gap: 4px; }
+.cat-row-top   { display: flex; justify-content: space-between; align-items: center; }
+.cat-name      { font-size: 13px; font-weight: 500; color: var(--gray-700); }
+.cat-pct       { font-size: 12px; font-weight: 600; color: var(--gray-400); }
+.cat-bar-track {
+  height: 6px;
+  background: var(--gray-100);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.cat-bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  transition: width .6s ease;
+}

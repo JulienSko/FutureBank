@@ -1,0 +1,18 @@
+.reco-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  margin-top: 16px;
+}
+.reco-card {
+  border: 1.5px solid var(--blue-100);
+  border-radius: var(--radius);
+  padding: 16px;
+  background: var(--blue-50);
+  cursor: pointer;
+  transition: all .2s;
+}
+.reco-card:hover { border-color: var(--blue-400); transform: translateY(-2px); box-shadow: var(--shadow); }
+.reco-icon  { font-size: 26px; margin-bottom: 8px; }
+.reco-title { font-size: 13px; font-weight: 700; color: var(--blue-950); margin-bottom: 4px; }
+.reco-desc  { font-size: 12px; color: var(--gray-600); line-height: 1.5; }

@@ -1,0 +1,13 @@
+@media (max-width: 900px) {
+  .sidebar { width: 60px; }
+  .sidebar-logo .logo-text,
+  .nav-item span,
+  .nav-section-label,
+  .sidebar-user .user-info { display: none; }
+  .main { margin-left: 60px; }
+  .grid-2,
+  .grid-3-1,
+  .reco-grid,
+  .settings-grid,
+  .forecast-grid { grid-template-columns: 1fr; }
+}

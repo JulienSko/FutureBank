@@ -1,0 +1,11 @@
+@import './variables.css';
+@import './base.css';
+@import './layout.css';
+@import './components.css';
+@import './dashboard.css';
+@import './transactions.css';
+@import './budget.css';
+@import './ai.css';
+@import './recommendations.css';
+@import './settings.css';
+@import './responsive.css';
