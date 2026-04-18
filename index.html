@@ -135,6 +135,18 @@
       </div>
     </div>
     <div class="card" style="margin-bottom:20px;">
+      <div class="card-header">
+        <div class="card-title">✏️ Gérer mes catégories & budgets</div>
+        <button class="btn btn-outline" style="font-size:12px; padding:6px 14px;"
+          onclick="this.closest('.card').querySelector('.budget-editor-body').classList.toggle('hidden-section')">
+          Afficher / Masquer
+        </button>
+      </div>
+      <div class="card-body budget-editor-body hidden-section">
+        <div id="budgetEditor"></div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:20px;">
       <div class="card-header"><div class="card-title">📊 Prévisionnel vs Réel — ce mois</div></div>
       <div class="card-body"><div id="previsReelGrid"></div></div>
     </div>

@@ -153,7 +153,7 @@ Le graphique des flux financiers lit directement `accountHistory` (géré dans *
 ### Alertes budget
 Chaque catégorie affiche un badge coloré :
 - 🟢 Vert — dans le budget
-- 🟡 Ambre — > 80% du budget
+- 🟡 Jaune — > 80% du budget
 - 🔴 Rouge + montant dépassé — budget dépassé
 
 ### Prévisionnel vs Réel

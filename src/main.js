@@ -1,7 +1,8 @@
 import { navigate, initNavigation }                          from './js/navigation.js';
 import { renderDashboard }                                    from './js/pages/dashboard.js';
 import { renderTransactions, exportCSV }                     from './js/pages/transactions.js';
-import { saveApiKey, sendAI, askQuick }                       from './js/pages/ai.js';
+import { saveApiKey, sendAI, askQuick }                        from './js/pages/ai.js';
+import { saveBudgetEditor, addBudgetCategory, deleteBudgetCategory } from './js/pages/budget.js';
 import { saveSettings, resetSettings }                        from './js/pages/settings.js';
 import { saveEligibiliteForm, toggleEchelon, autoCalcEchelon } from './js/pages/eligibilite.js';
 import { addSimMonth, deleteSimMonth, updateSolde }           from './js/pages/simulation.js';
@@ -23,6 +24,9 @@ window.deleteSimMonth        = deleteSimMonth;
 window.updateSolde           = updateSolde;
 window.toggleTheme           = toggleTheme;
 window.resetAll              = resetAll;
+window.saveBudgetEditor      = saveBudgetEditor;
+window.addBudgetCategory     = addBudgetCategory;
+window.deleteBudgetCategory  = deleteBudgetCategory;
 
 function initDate() {
   document.getElementById('topbarDate').textContent =

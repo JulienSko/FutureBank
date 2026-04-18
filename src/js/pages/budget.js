@@ -1,11 +1,92 @@
 import { state, categories, accountHistory } from '../data.js';
 import { fmt } from '../utils.js';
+import { saveAll } from '../storage.js';
+
+const EMOJIS = ['🏠','🛒','🚌','🎬','⚕️','📦','📚','👕','🍕','☕','🎮','🏋️','💊','🐾','✈️','🎵','💡','🔧'];
 
 export function renderBudget() {
   renderBudgetBars();
   renderScore();
   renderPrevisionnelVsReel();
   renderForecast();
+  renderBudgetEditor();
+}
+
+export function saveBudgetEditor() {
+  const rows = document.querySelectorAll('.budget-edit-row');
+  rows.forEach((row, i) => {
+    const emoji  = row.querySelector('.budget-edit-emoji').value.trim() || '📦';
+    const name   = row.querySelector('.budget-edit-name').value.trim();
+    const budget = parseFloat(row.querySelector('.budget-edit-amount').value) || 0;
+    if (name && i < categories.length) {
+      categories[i].emoji  = emoji;
+      categories[i].name   = name;
+      categories[i].budget = budget;
+    }
+  });
+  saveAll();
+  renderBudget();
+  const alertEl = document.getElementById('budgetSaveAlert');
+  if (alertEl) { alertEl.style.display = 'flex'; setTimeout(() => { alertEl.style.display = 'none'; }, 2500); }
+}
+
+export function addBudgetCategory() {
+  const name   = document.getElementById('newCatName').value.trim();
+  const budget = parseFloat(document.getElementById('newCatBudget').value) || 0;
+  const emoji  = document.getElementById('newCatEmoji').value.trim() || '📦';
+  if (!name) return;
+  categories.push({ name, emoji, color: '#94a3b8', budget, depenses: 0 });
+  document.getElementById('newCatName').value   = '';
+  document.getElementById('newCatBudget').value = '';
+  document.getElementById('newCatEmoji').value  = '';
+  saveAll();
+  renderBudget();
+}
+
+export function deleteBudgetCategory(index) {
+  if (categories.length <= 1) return;
+  categories.splice(index, 1);
+  saveAll();
+  renderBudget();
+}
+
+function renderBudgetEditor() {
+  const container = document.getElementById('budgetEditor');
+  if (!container) return;
+
+  container.innerHTML = `
+    <div id="budgetSaveAlert" style="display:none;" class="alert alert-success">✅ Budgets mis à jour !</div>
+    <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;">
+      ${categories.map((c, i) => `
+        <div class="budget-edit-row" style="display:flex; gap:8px; align-items:center;">
+          <input class="form-input budget-edit-emoji" value="${c.emoji}"
+            style="width:52px; text-align:center; font-size:18px; padding:8px 4px;" placeholder="📦" />
+          <input class="form-input budget-edit-name" value="${c.name}"
+            style="flex:2;" placeholder="Catégorie" />
+          <input class="form-input budget-edit-amount" type="number" value="${c.budget}"
+            style="flex:1; min-width:90px;" placeholder="Budget €" />
+          <span style="font-size:12px; color:var(--gray-400); white-space:nowrap; min-width:70px;">
+            Réel : ${fmt(c.depenses)} €
+          </span>
+          <button onclick="deleteBudgetCategory(${i})"
+            style="background:none; border:none; color:var(--gray-400); cursor:pointer; font-size:18px; padding:4px 6px; flex-shrink:0;"
+            title="Supprimer">✕</button>
+        </div>
+      `).join('')}
+    </div>
+
+    <div style="border-top:1px solid var(--gray-200); padding-top:14px; margin-bottom:14px;">
+      <div style="font-size:13px; font-weight:600; color:var(--gray-700); margin-bottom:8px;">Ajouter une catégorie</div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+        <input class="form-input" id="newCatEmoji" placeholder="😀" style="width:52px; text-align:center; font-size:18px; padding:8px 4px;" />
+        <input class="form-input" id="newCatName" placeholder="Nom (ex : Abonnements)" style="flex:2; min-width:140px;" />
+        <input class="form-input" id="newCatBudget" type="number" placeholder="Budget €" style="flex:1; min-width:90px;" />
+        <button class="btn btn-outline" onclick="addBudgetCategory()" style="white-space:nowrap;">+ Ajouter</button>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="saveBudgetEditor()">💾 Enregistrer les budgets</button>
+  `;
 }
 
 function renderBudgetBars() {
