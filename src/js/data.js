@@ -20,6 +20,7 @@ export const state = {
   handicap: false,
   pratiqueSport: true,
   mobiliteInternationale: false,
+  nbSiblings: 1,
 };
 
 export const categories = [

@@ -1,0 +1,29 @@
+[data-theme="dark"] body         { background: var(--bg-app); color: var(--gray-700); }
+[data-theme="dark"] .topbar      { background: #1e293b; border-color: var(--border); }
+[data-theme="dark"] .card        { background: var(--bg-card); border-color: var(--border); }
+[data-theme="dark"] .form-input  { background: #0f172a; border-color: var(--border); color: var(--gray-600); }
+[data-theme="dark"] .btn-outline { background: #1e293b; border-color: var(--border); color: var(--gray-600); }
+[data-theme="dark"] .alert-info  { background: #172554; border-color: #1e3a8a; color: var(--blue-300); }
+[data-theme="dark"] .alert-warn  { background: #422006; border-color: #78350f; color: #fcd34d; }
+[data-theme="dark"] .alert-success { background: #052e16; border-color: #166534; color: #4ade80; }
+[data-theme="dark"] .tx-table th { background: #1e293b; color: var(--gray-400); }
+[data-theme="dark"] .tx-table tr:hover { background: #1e293b; }
+[data-theme="dark"] .progress-track { background: #334155; }
+[data-theme="dark"] .cat-bar-track  { background: #334155; }
+[data-theme="dark"] .stat-card.blue  { background: #1e3a8a; }
+[data-theme="dark"] .stat-card.green { background: #052e16; }
+[data-theme="dark"] .stat-card.red   { background: #450a0a; }
+[data-theme="dark"] .stat-card.amber { background: #422006; }
+[data-theme="dark"] .api-banner      { background: #1e293b; border-color: var(--border); }
+[data-theme="dark"] .ai-message      { background: #1e3a8a; color: var(--blue-100); }
+[data-theme="dark"] .quick-btn       { background: #1e293b; border-color: var(--border); color: var(--gray-600); }
+[data-theme="dark"] .quick-btn:hover { background: var(--blue-200); }
+[data-theme="dark"] .save-bar        { background: #1e293b; border-color: var(--border); }
+[data-theme="dark"] .forecast-item   { background: #1e293b; border-color: var(--border); }
+[data-theme="dark"] .reco-item       { background: #1e293b; border-color: var(--border); }
+[data-theme="dark"] .sidebar         { background: var(--bg-sidebar); }
+[data-theme="dark"] select.form-input option { background: #1e293b; }
+
+/* Scrollbar dark */
+[data-theme="dark"] ::-webkit-scrollbar-track { background: #1e293b; }
+[data-theme="dark"] ::-webkit-scrollbar-thumb { background: #334155; }

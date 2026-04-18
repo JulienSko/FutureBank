@@ -1,5 +1,7 @@
 import { state, accountHistory, categories } from '../data.js';
 import { fmt } from '../utils.js';
+import { renderDashboard } from './dashboard.js';
+import { saveAll } from '../storage.js';
 
 export function renderSimulation() {
   renderHistoryTable();
@@ -13,6 +15,7 @@ export function updateSolde() {
   state.solde = val;
   document.getElementById('statSolde').textContent = fmt(val) + ' €';
   document.getElementById('topbarBalance').textContent = 'Solde : ' + fmt(val) + ' €';
+  saveAll();
 }
 
 export function addSimMonth() {
@@ -34,6 +37,8 @@ export function addSimMonth() {
   renderHistoryTable();
   renderHistoryChart();
   renderAnnualSummary();
+  renderDashboard();
+  saveAll();
 }
 
 export function deleteSimMonth(index) {
@@ -41,6 +46,8 @@ export function deleteSimMonth(index) {
   renderHistoryTable();
   renderHistoryChart();
   renderAnnualSummary();
+  renderDashboard();
+  saveAll();
 }
 
 function renderHistoryTable() {

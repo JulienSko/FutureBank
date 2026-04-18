@@ -1,5 +1,6 @@
 import { state, categories } from '../data.js';
 import { renderDashboard } from './dashboard.js';
+import { saveAll } from '../storage.js';
 
 export function loadSettingsForm() {
   document.getElementById('settPrenom').value          = state.prenom;
@@ -33,6 +34,7 @@ export function saveSettings() {
   categories[0].depenses = state.loyer;
   renderDashboard();
 
+  saveAll();
   const alertEl = document.getElementById('saveAlert');
   alertEl.style.display = 'flex';
   setTimeout(() => { alertEl.style.display = 'none'; }, 3000);

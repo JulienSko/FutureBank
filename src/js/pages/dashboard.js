@@ -1,4 +1,4 @@
-import { state, categories, chartData, transactions } from '../data.js';
+import { state, categories, accountHistory, transactions } from '../data.js';
 import { fmt, formatDate, getCatEmoji } from '../utils.js';
 
 export function renderDashboard() {
@@ -19,13 +19,16 @@ export function renderDashboard() {
 }
 
 function renderChart() {
-  const maxVal  = Math.max(...chartData.map(d => Math.max(d.revenus, d.depenses)));
+  const data    = accountHistory.length > 0 ? accountHistory : [];
+  if (data.length === 0) return;
+  const maxVal  = Math.max(...data.map(d => Math.max(d.revenus, d.depenses)), 1);
   const barsCtn = document.getElementById('chartBars');
   const lblsCtn = document.getElementById('chartLabels');
   barsCtn.innerHTML = '';
   lblsCtn.innerHTML = '';
 
-  chartData.forEach(d => {
+  data.forEach(d => {
+    const label = d.month.split(' ')[0]; // "Jan 2025" → "Jan"
     const col = document.createElement('div');
     col.className = 'bar-col';
     const h1 = Math.round((d.revenus  / maxVal) * 110);
@@ -42,7 +45,7 @@ function renderChart() {
     lbl.className    = 'bar-label';
     lbl.style.flex   = '1';
     lbl.style.textAlign = 'center';
-    lbl.textContent  = d.month;
+    lbl.textContent  = label;
     lblsCtn.appendChild(lbl);
   });
 }

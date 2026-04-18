@@ -1,6 +1,6 @@
 # FutureBank — La banque intelligente des étudiants
 
-> Une application de gestion financière pensée pour les étudiants, avec conseiller IA, suivi budgétaire, détection automatique des aides et simulation bancaire.
+> Une application de gestion financière pensée pour les étudiants, avec conseiller IA, suivi budgétaire, détection automatique des aides, simulation bancaire et mode sombre.
 
 ---
 
@@ -9,11 +9,15 @@
 **FutureBank** est une application web monopage (SPA) qui simule un tableau de bord bancaire étudiant. Elle permet de :
 
 - Suivre son solde, ses revenus et ses dépenses en temps réel
-- Gérer son budget par catégorie avec scoring financier
+- Gérer son budget par catégorie avec alertes et scoring financier adapté aux étudiants
+- Comparer le **prévisionnel vs le réel** mois par mois
 - Obtenir des conseils personnalisés via un conseiller IA (Claude d'Anthropic)
 - Découvrir les aides étudiantes auxquelles on est éligible (bourse CROUS, APL, Pass'sport…)
 - Renseigner son profil étudiant pour affiner l'analyse d'éligibilité
-- Simuler son historique bancaire mois par mois avec résumé annuel
+- Simuler son historique bancaire mois par mois — **synchronisé avec le tableau de bord**
+- Exporter ses transactions en **CSV**
+- Basculer en **mode sombre**
+- Retrouver toutes ses données après rechargement grâce à la **persistance localStorage**
 
 ---
 
@@ -23,11 +27,12 @@
 |---|---|
 | **Vanilla JavaScript (ES6 modules)** | Logique applicative |
 | **Vite 5** | Serveur de développement & build |
-| **HTML5 / CSS3** | Structure et styles (17 fichiers CSS modulaires) |
+| **HTML5 / CSS3** | Structure et styles (18 fichiers CSS modulaires) |
 | **Anthropic API (Claude)** | Conseiller IA en temps réel |
+| **localStorage** | Persistance des données entre sessions |
 | **Google Fonts** | Typographies DM Serif Display & DM Sans |
 
-Aucune dépendance front-end externe (pas de React, Vue, Angular). Tout est en JavaScript natif.
+Aucune dépendance front-end externe (pas de React, Vue, Angular).
 
 ---
 
@@ -43,8 +48,8 @@ Aucune dépendance front-end externe (pas de React, Vue, Angular). Tout est en J
 ### 1. Cloner le projet
 
 ```bash
-git clone https://github.com/votre-repo/futurebank.git
-cd futurebank
+git clone https://github.com/JulienSko/FutureBank.git
+cd FutureBank
 ```
 
 ### 2. Installer les dépendances
@@ -86,31 +91,33 @@ Le conseiller IA fonctionne sans clé API avec des réponses prédéfinies adapt
 ## Structure du projet
 
 ```
-FutureBank-main/
+FutureBank/
 ├── index.html                  # Point d'entrée — toute la structure HTML
 ├── package.json
 └── src/
-    ├── main.js                 # Initialisation + exposition des fonctions window
+    ├── main.js                 # Init, exposition window, loadAll au démarrage
     ├── js/
     │   ├── data.js             # État global et données mock (profil étudiant)
-    │   ├── navigation.js       # Routage SPA (navigate, initNavigation)
+    │   ├── navigation.js       # Routage SPA
+    │   ├── storage.js          # Persistance localStorage + toggle dark mode
     │   ├── utils.js            # Fonctions utilitaires (fmt, dates…)
     │   └── pages/
-    │       ├── dashboard.js    # Tableau de bord (stats, graphique, transactions)
-    │       ├── transactions.js # Liste des transactions avec recherche/filtre
-    │       ├── budget.js       # Suivi budgétaire, score financier, prévisions
-    │       ├── ai.js           # Conseiller IA — intégration Anthropic API
+    │       ├── dashboard.js    # Tableau de bord — lit accountHistory pour le graphique
+    │       ├── transactions.js # Liste + recherche/filtre + export CSV
+    │       ├── budget.js       # Suivi, alertes, prévisionnel vs réel, score étudiant
+    │       ├── ai.js           # Conseiller IA — intégration Anthropic API corrigée
     │       ├── recommandations.js  # Recommandations de placements/épargne
-    │       ├── aides.js        # Aides étudiantes avec éligibilité calculée
+    │       ├── aides.js        # 12 aides étudiantes avec éligibilité calculée
     │       ├── eligibilite.js  # Questionnaire profil étudiant
-    │       ├── simulation.js   # Simulation bancaire & historique mensuel
+    │       ├── simulation.js   # Simulation bancaire & historique — sync dashboard
     │       └── settings.js     # Paramètres du compte
     └── css/
         ├── main.css            # Fichier d'import central
-        ├── variables.css       # Tokens de design (couleurs, typographie)
+        ├── variables.css       # Tokens de design + variables dark mode
+        ├── dark.css            # Overrides mode sombre
         ├── base.css
-        ├── layout.css          # Sidebar + topbar
-        ├── components.css      # Boutons, cartes, formulaires
+        ├── layout.css
+        ├── components.css
         ├── dashboard.css
         ├── transactions.css
         ├── budget.css
@@ -126,78 +133,80 @@ FutureBank-main/
 
 | Page | Route | Description |
 |---|---|---|
-| Tableau de bord | `dashboard` | Vue d'ensemble : solde, revenus, dépenses, graphique 6 mois |
-| Transactions | `transactions` | Historique avec recherche et filtre par catégorie |
-| Budget prévisionnel | `budget` | Suivi par catégorie, score financier, projection 3 mois |
+| Tableau de bord | `dashboard` | Vue d'ensemble — graphique synchronisé avec la simulation |
+| Transactions | `transactions` | Historique avec recherche, filtre et export CSV |
+| Budget prévisionnel | `budget` | Suivi, alertes dépassement, prévisionnel vs réel, score étudiant |
 | Conseiller IA | `conseiller` | Chatbot IA étudiant (réponses prédéfinies ou Claude API) |
 | Recommandations | `recommandations` | Placements et épargne adaptés au profil |
 | Aides Étudiantes | `aides` | 12 aides étudiantes avec éligibilité automatique |
 | Mon Profil Étudiant | `eligibilite` | Questionnaire d'éligibilité (bourse, logement, sport…) |
-| Ma Simulation | `simulation` | Personnalisation du solde et historique mois/an |
-| Paramètres | `compte` | Modifier les données du compte (nom, revenus, objectifs…) |
+| Ma Simulation | `simulation` | Solde + historique mois par mois → met à jour le dashboard |
+| Paramètres | `compte` | Modifier les données financières et le profil |
+
+---
+
+## Fonctionnalités détaillées
+
+### Tableau de bord synchronisé
+Le graphique des flux financiers lit directement `accountHistory` (géré dans **Ma Simulation**). Ajouter ou supprimer un mois dans la simulation met à jour le graphique instantanément.
+
+### Alertes budget
+Chaque catégorie affiche un badge coloré :
+- 🟢 Vert — dans le budget
+- 🟡 Ambre — > 80% du budget
+- 🔴 Rouge + montant dépassé — budget dépassé
+
+### Prévisionnel vs Réel
+Tableau comparatif dans la page Budget : budget fixé vs dépenses réelles, avec écart et alerte globale.
+
+### Score financier étudiant
+Les seuils d'épargne sont adaptés aux revenus modestes : 8% d'épargne est considéré comme bon pour un étudiant (vs 20% pour un salarié).
+
+### Export CSV
+Bouton dans la page Transactions — exporte les transactions filtrées au format CSV (encodage UTF-8 avec BOM pour Excel).
+
+### Mode sombre
+Bouton 🌙 dans la barre supérieure. Préférence sauvegardée en localStorage.
+
+### Persistance localStorage
+Toutes les modifications (profil, solde, historique, thème) sont sauvegardées automatiquement et rechargées au démarrage. Pour réinitialiser : `resetAll()` dans la console.
 
 ---
 
 ## Aides étudiantes détectées
 
-L'application calcule automatiquement l'éligibilité aux aides suivantes à partir du profil renseigné dans **Mon Profil Étudiant** :
+L'application calcule automatiquement l'éligibilité aux aides suivantes depuis **Mon Profil Étudiant** :
 
 - 🎓 **Bourse CROUS** (échelons 0 à 7 — jusqu'à 623 €/mois)
 - 🏠 **APL / Aide au logement** (CAF — jusqu'à 280 €/mois)
 - 🔑 **Garantie Visale** (caution gratuite)
-- ⚽ **Pass'Sport** (50 €/an pour inscription en club)
+- ⚽ **Pass'Sport** (50 €/an)
 - ✈️ **Aide à la mobilité internationale** (400 €/mois Erasmus+)
-- 🏥 **Complémentaire Santé Solidaire** (mutuelle gratuite)
-- 🍽️ **Tarif social RU** (repas à 1 € pour boursiers)
-- 🏆 **Aide au mérite** (900 €/an mention TB)
-- 💼 **Prime d'activité** (pour étudiants-salariés)
+- 🏥 **Complémentaire Santé Solidaire** (gratuite)
+- 🍽️ **Tarif social RU** (1 €/repas pour boursiers)
+- 🏆 **Aide au mérite** (900 €/an)
+- 💼 **Prime d'activité** (étudiants-salariés)
 - ♿ **AAH** (Allocation Adulte Handicapé)
 - 💻 **Aide à l'équipement numérique**
-- 🚌 **Carte Imagine R** (transports Île-de-France à tarif réduit)
+- 🚌 **Carte Imagine R** (transports IDF à tarif réduit)
 
 ---
 
 ## Données de démonstration
 
-Le profil par défaut est **Alex Dubois**, étudiant en Licence boursier CROUS échelon 3, logé en résidence universitaire avec 850 €/mois de revenus (bourse + job étudiant). Toutes les données sont modifiables depuis :
+Profil par défaut : **Alex Dubois**, étudiant en Licence, boursier CROUS échelon 3, résidence universitaire, 850 €/mois. Modifiable depuis :
 
-- **Paramètres du compte** — pour les données financières
-- **Mon Profil Étudiant** — pour les données académiques et d'éligibilité
-- **Ma Simulation** — pour construire un historique bancaire personnalisé
+- **Paramètres du compte** — données financières
+- **Mon Profil Étudiant** — données académiques et éligibilité
+- **Ma Simulation** — historique bancaire personnalisé
 
----
-
-## Personnalisation
-
-### Changer le profil par défaut
-
-Éditez [`src/js/data.js`](src/js/data.js) :
-
-```js
-export const state = {
-  prenom: 'Alex',
-  solde: 1240,
-  revenus: 850,
-  loyer: 380,
-  boursier: true,
-  echelon: 3,
-  // ...
-};
-```
-
-### Ajouter des transactions
-
-Dans [`src/js/data.js`](src/js/data.js), ajoutez une entrée dans le tableau `transactions` :
-
-```js
-{ date: '2025-07-01', desc: 'Bourse CROUS — Juillet', cat: 'Revenus', amount: +487 },
-```
+Pour repartir de zéro : ouvrir la console du navigateur et taper `resetAll()`.
 
 ---
 
 ## Modèle IA utilisé
 
-Le conseiller IA utilise **`claude-haiku-4-5-20251001`** (Anthropic), optimisé pour la rapidité et le coût, idéal pour une interface de chat. Le prompt système inclut automatiquement le contexte financier complet de l'étudiant.
+`claude-haiku-4-5-20251001` (Anthropic) — rapide et économique, idéal pour le chat. Le prompt système inclut le contexte financier et académique complet de l'étudiant.
 
 ---
 

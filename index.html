@@ -44,6 +44,7 @@
     </div>
     <div class="topbar-actions">
       <span class="badge-notif" id="topbarBalance">Solde : 1 240 €</span>
+      <button id="themeToggle" onclick="toggleTheme()" style="background:none; border:none; font-size:20px; cursor:pointer; padding:4px 6px; border-radius:8px; line-height:1;" title="Mode sombre / clair">🌙</button>
     </div>
   </div>
 
@@ -101,6 +102,8 @@
             <option value="Santé">Santé</option>
             <option value="Revenus">Revenus</option>
           </select>
+          <button class="btn btn-outline" onclick="exportCSV()" style="white-space:nowrap; font-size:13px; padding:8px 14px;">⬇️ Export CSV</button>
+          <span id="txCount" style="font-size:12px; color:var(--gray-400);"></span>
         </div>
       </div>
     </div>
@@ -130,6 +133,10 @@
           <div style="font-size:13px; color:var(--gray-600); line-height:1.6;" id="scoreMsg"></div>
         </div>
       </div>
+    </div>
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-header"><div class="card-title">📊 Prévisionnel vs Réel — ce mois</div></div>
+      <div class="card-body"><div id="previsReelGrid"></div></div>
     </div>
     <div class="card">
       <div class="card-header"><div class="card-title">Projection sur 3 mois</div></div>
@@ -228,32 +235,47 @@
             </div>
           </div>
 
-          <div class="form-section-title">Bourse & logement</div>
+          <div class="form-section-title">Calcul de la bourse CROUS</div>
           <div class="settings-grid">
+            <div class="form-group">
+              <label class="form-label">Revenus parentaux annuels (€)</label>
+              <input class="form-input" id="eligRevenuParental" type="number" placeholder="Ex : 28000" oninput="autoCalcEchelon()" />
+              <div class="form-hint">Revenu fiscal de référence N-2 (déclaration d'impôts de vos parents il y a 2 ans).</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Frères / sœurs à charge des parents</label>
+              <input class="form-input" id="eligNbSiblings" type="number" min="0" max="10" placeholder="0" oninput="autoCalcEchelon()" />
+              <div class="form-hint">Chaque enfant à charge augmente le plafond de ~2 400 €.</div>
+            </div>
+          </div>
+
+          <!-- Résultat calcul échelon -->
+          <div id="echelonResult" style="margin:12px 0 4px;">
+            <div style="color:var(--gray-400); font-size:13px;">Entrez les revenus parentaux pour calculer votre échelon.</div>
+          </div>
+
+          <div class="settings-grid" style="margin-top:12px;">
             <div class="form-group">
               <label class="form-label">Êtes-vous boursier(ère) CROUS ?</label>
               <select class="form-input" id="eligBoursier" onchange="toggleEchelon()">
                 <option value="non">Non</option>
                 <option value="oui">Oui</option>
               </select>
+              <div class="form-hint">Mis à jour automatiquement par le calcul ci-dessus.</div>
             </div>
             <div class="form-group" id="echelonGroup">
-              <label class="form-label">Échelon de bourse (0 à 7)</label>
+              <label class="form-label">Échelon calculé</label>
               <select class="form-input" id="eligEchelon">
-                <option value="0">Échelon 0 (113 €/mois)</option>
-                <option value="1">Échelon 1 (167 €/mois)</option>
-                <option value="2">Échelon 2 (240 €/mois)</option>
-                <option value="3">Échelon 3 (320 €/mois)</option>
-                <option value="4">Échelon 4 (400 €/mois)</option>
-                <option value="5">Échelon 5 (487 €/mois)</option>
-                <option value="6">Échelon 6 (555 €/mois)</option>
-                <option value="7">Échelon 7 (623 €/mois)</option>
+                <option value="0">Échelon 0 — 113 €/mois</option>
+                <option value="1">Échelon 1 — 185 €/mois</option>
+                <option value="2">Échelon 2 — 258 €/mois</option>
+                <option value="3">Échelon 3 — 320 €/mois</option>
+                <option value="4">Échelon 4 — 400 €/mois</option>
+                <option value="5">Échelon 5 — 487 €/mois</option>
+                <option value="6">Échelon 6 — 555 €/mois</option>
+                <option value="7">Échelon 7 — 623 €/mois</option>
               </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Revenus parentaux annuels (€)</label>
-              <input class="form-input" id="eligRevenuParental" type="number" placeholder="Ex : 28000" />
-              <div class="form-hint">Référence N-2. Utilisé pour calculer votre éligibilité à la bourse.</div>
+              <div class="form-hint">Calculé automatiquement — vous pouvez corriger manuellement.</div>
             </div>
             <div class="form-group">
               <label class="form-label">Logement en résidence CROUS ?</label>
