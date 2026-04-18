@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FutureBank — La banque des étudiants</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/src/css/main.css" />
+</head>
+<body>
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">🎓</div>
+    <div class="logo-text">Future<span>Bank</span></div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section-label">Principal</div>
+    <button class="nav-item active" data-page="dashboard"><span class="nav-icon">📊</span><span>Tableau de bord</span></button>
+    <button class="nav-item" data-page="transactions"><span class="nav-icon">💸</span><span>Transactions</span></button>
+    <button class="nav-item" data-page="budget"><span class="nav-icon">📅</span><span>Budget prévisionnel</span></button>
+    <div class="nav-section-label" style="margin-top:12px;">IA & Conseils</div>
+    <button class="nav-item" data-page="conseiller"><span class="nav-icon">🤖</span><span>Conseiller IA</span></button>
+    <button class="nav-item" data-page="recommandations"><span class="nav-icon">💡</span><span>Recommandations</span></button>
+    <button class="nav-item" data-page="aides"><span class="nav-icon">🏛️</span><span>Aides Étudiantes</span></button>
+    <div class="nav-section-label" style="margin-top:12px;">Mon Espace Étudiant</div>
+    <button class="nav-item" data-page="eligibilite"><span class="nav-icon">📋</span><span>Mon Profil Étudiant</span></button>
+    <button class="nav-item" data-page="simulation"><span class="nav-icon">🏦</span><span>Ma Simulation</span></button>
+    <button class="nav-item" data-page="compte"><span class="nav-icon">⚙️</span><span>Paramètres du compte</span></button>
+  </div>
+  <div class="sidebar-user">
+    <div class="user-avatar" id="avatarInitials">AD</div>
+    <div class="user-info">
+      <div class="user-name" id="sidebarName">Alex Dubois</div>
+      <div class="user-role">Compte Étudiant</div>
+    </div>
+  </div>
+</nav>
+
+<div class="main">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title" id="topbarTitle">Tableau de bord</div>
+      <div class="topbar-date" id="topbarDate"></div>
+    </div>
+    <div class="topbar-actions">
+      <span class="badge-notif" id="topbarBalance">Solde : 1 240 €</span>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ DASHBOARD ═══════════════════════════════ -->
+  <div class="page active" id="page-dashboard">
+    <div class="alert alert-info" style="margin-bottom:20px;">
+      🎓 Bienvenue sur <strong>FutureBank</strong> — la banque pensée pour les étudiants. Gérez votre budget, découvrez vos aides et obtenez des conseils personnalisés.
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card blue"><div class="stat-label">Solde disponible</div><div class="stat-value" id="statSolde">1 240 €</div><div class="stat-sub">Compte Étudiant</div></div>
+      <div class="stat-card green"><div class="stat-label">Revenus du mois</div><div class="stat-value" id="statRevenus">850 €</div><div class="stat-trend up">Bourse + job étudiant</div></div>
+      <div class="stat-card red"><div class="stat-label">Dépenses du mois</div><div class="stat-value" id="statDepenses">780 €</div><div class="stat-trend down" id="statTrendDepenses">↑ +5.1% vs mois dernier</div></div>
+      <div class="stat-card amber"><div class="stat-label">Épargne mensuelle</div><div class="stat-value" id="statEpargne">70 €</div><div class="stat-sub" id="statEpargneRate">Taux d'épargne : 8%</div></div>
+    </div>
+
+    <div class="grid-3-1">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Flux financiers — 6 derniers mois</div></div>
+        <div class="card-body">
+          <div style="display:flex; gap:14px; margin-bottom:8px;">
+            <div style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--gray-600);"><div style="width:12px;height:12px;background:var(--blue-500);border-radius:3px;"></div> Revenus</div>
+            <div style="display:flex; align-items:center; gap:6px; font-size:12px; color:var(--gray-600);"><div style="width:12px;height:12px;background:var(--blue-200);border-radius:3px;"></div> Dépenses</div>
+          </div>
+          <div class="chart-bars" id="chartBars"></div>
+          <div style="display:flex; gap:10px;" id="chartLabels"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Par catégorie</div></div>
+        <div class="card-body"><div class="category-list" id="catList"></div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Dernières transactions</div>
+        <button class="btn btn-outline" style="font-size:12px; padding:6px 14px;" onclick="navigate('transactions')">Voir tout</button>
+      </div>
+      <div class="card-body-pt0" style="padding-top:12px;"><div id="lastTx"></div></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ TRANSACTIONS ═══════════════════════════════ -->
+  <div class="page" id="page-transactions">
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-body">
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+          <input class="form-input" id="txSearch" placeholder="🔍  Rechercher…" style="flex:1; min-width:200px;" oninput="renderTransactions()" />
+          <select class="form-input" id="txFilter" style="max-width:180px;" onchange="renderTransactions()">
+            <option value="">Toutes catégories</option>
+            <option value="Logement">Logement</option>
+            <option value="Alimentaire">Alimentaire</option>
+            <option value="Transport">Transport</option>
+            <option value="Loisirs">Loisirs</option>
+            <option value="Santé">Santé</option>
+            <option value="Revenus">Revenus</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body" style="padding:0;">
+        <table class="tx-table" id="txTable">
+          <thead><tr><th>Date</th><th>Description</th><th>Catégorie</th><th>Montant</th></tr></thead>
+          <tbody id="txBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ BUDGET ═══════════════════════════════ -->
+  <div class="page" id="page-budget">
+    <div class="alert alert-info">💡 Le budget prévisionnel est calculé automatiquement sur la base de vos dépenses des 6 derniers mois.</div>
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Budget mensuel — suivi</div></div>
+        <div class="card-body"><div id="budgetBars"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Score financier</div></div>
+        <div class="card-body" style="text-align:center; padding-top:32px;">
+          <div style="font-size:72px; font-family:'DM Serif Display', serif; color:var(--blue-600);" id="scoreVal">78</div>
+          <div style="font-size:14px; color:var(--gray-400); margin-bottom:16px;">/ 100 — Bonne santé financière</div>
+          <div style="font-size:13px; color:var(--gray-600); line-height:1.6;" id="scoreMsg"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Projection sur 3 mois</div></div>
+      <div class="card-body"><div class="forecast-grid" id="forecastGrid"></div></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ CONSEILLER IA ═══════════════════════════════ -->
+  <div class="page" id="page-conseiller">
+    <div class="api-banner">
+      <div class="api-banner-icon">🔑</div>
+      <div class="api-banner-text">
+        <div class="api-banner-title">Clé API Anthropic (optionnelle)</div>
+        <div class="api-banner-desc">Sans clé API, le conseiller utilise des réponses prédéfinies. Avec votre clé, il utilise Claude (IA) pour des réponses en temps réel. La clé reste dans votre navigateur.</div>
+      </div>
+      <input type="password" class="api-key-input" id="apiKeyInput" placeholder="sk-ant-…" />
+      <button class="btn btn-primary" onclick="saveApiKey()">Enregistrer</button>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">🤖 Conseiller IA Étudiant</div></div>
+      <div class="card-body">
+        <div class="quick-btns">
+          <button class="quick-btn" onclick="askQuick('Comment gérer mon budget étudiant ?')">Budget étudiant</button>
+          <button class="quick-btn" onclick="askQuick('Est-ce que j\'ai droit à la bourse CROUS ?')">Bourse CROUS</button>
+          <button class="quick-btn" onclick="askQuick('Comment obtenir l\'APL pour mon logement ?')">APL logement</button>
+          <button class="quick-btn" onclick="askQuick('Comment économiser en tant qu\'étudiant ?')">Économiser</button>
+          <button class="quick-btn" onclick="askQuick('Quelles aides étudiantes puis-je obtenir ?')">Toutes mes aides</button>
+        </div>
+        <div class="ai-chat" id="aiMessages"></div>
+        <div class="ai-input-row">
+          <input class="ai-input" id="aiInput" placeholder="Posez votre question au conseiller IA étudiant…" onkeydown="if(event.key==='Enter') sendAI()" />
+          <button class="btn btn-primary" id="aiSendBtn" onclick="sendAI()">Envoyer</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ RECOMMANDATIONS ═══════════════════════════════ -->
+  <div class="page" id="page-recommandations">
+    <div class="alert alert-info" id="recoAlert">✨ Recommandations personnalisées basées sur votre profil financier étudiant.</div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">💡 Placements recommandés</div></div>
+      <div class="card-body"><div class="reco-grid" id="recoInvest"></div></div>
+    </div>
+    <div class="card" style="margin-top:20px;">
+      <div class="card-header"><div class="card-title">🏦 Épargne recommandée</div></div>
+      <div class="card-body"><div class="reco-grid" id="recoEpargne"></div></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ AIDES ÉTUDIANTES ═══════════════════════════════ -->
+  <div class="page" id="page-aides">
+    <div class="alert alert-warn">⚠️ Les informations sur les aides sont fournies à titre indicatif. Vérifiez votre éligibilité sur <strong>service-public.fr</strong></div>
+    <div id="aidesContent"></div>
+  </div>
+
+  <!-- ═══════════════════════════════ MON PROFIL ÉTUDIANT ═══════════════════════════════ -->
+  <div class="page" id="page-eligibilite">
+    <div id="eligAlert" style="display:none;" class="alert alert-success">✅ Profil mis à jour ! Vos aides éligibles ont été recalculées.</div>
+    <div class="grid-2" style="align-items:start;">
+
+      <!-- Formulaire -->
+      <div class="card">
+        <div class="card-header"><div class="card-title">📋 Mes informations personnelles</div></div>
+        <div class="card-body">
+          <div class="form-section-title" style="margin-top:0;">Situation académique</div>
+          <div class="settings-grid">
+            <div class="form-group">
+              <label class="form-label">Statut</label>
+              <select class="form-input" id="eligStatut">
+                <option value="etudiant">Étudiant(e)</option>
+                <option value="alternant">Alternant(e)</option>
+                <option value="stagiaire">Stagiaire</option>
+                <option value="doctorant">Doctorant(e)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Niveau d'études</label>
+              <select class="form-input" id="eligNiveau">
+                <option value="bts">BTS / BUT / IUT</option>
+                <option value="licence">Licence (Bac+1 à Bac+3)</option>
+                <option value="master">Master (Bac+4 / Bac+5)</option>
+                <option value="prepa">Prépa / Grande École</option>
+                <option value="doctorat">Doctorat</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Année d'études</label>
+              <select class="form-input" id="eligAnneeEtudes">
+                <option value="1">1ère année</option>
+                <option value="2">2ème année</option>
+                <option value="3">3ème année</option>
+                <option value="4">4ème année</option>
+                <option value="5">5ème année et +</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-section-title">Bourse & logement</div>
+          <div class="settings-grid">
+            <div class="form-group">
+              <label class="form-label">Êtes-vous boursier(ère) CROUS ?</label>
+              <select class="form-input" id="eligBoursier" onchange="toggleEchelon()">
+                <option value="non">Non</option>
+                <option value="oui">Oui</option>
+              </select>
+            </div>
+            <div class="form-group" id="echelonGroup">
+              <label class="form-label">Échelon de bourse (0 à 7)</label>
+              <select class="form-input" id="eligEchelon">
+                <option value="0">Échelon 0 (113 €/mois)</option>
+                <option value="1">Échelon 1 (167 €/mois)</option>
+                <option value="2">Échelon 2 (240 €/mois)</option>
+                <option value="3">Échelon 3 (320 €/mois)</option>
+                <option value="4">Échelon 4 (400 €/mois)</option>
+                <option value="5">Échelon 5 (487 €/mois)</option>
+                <option value="6">Échelon 6 (555 €/mois)</option>
+                <option value="7">Échelon 7 (623 €/mois)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Revenus parentaux annuels (€)</label>
+              <input class="form-input" id="eligRevenuParental" type="number" placeholder="Ex : 28000" />
+              <div class="form-hint">Référence N-2. Utilisé pour calculer votre éligibilité à la bourse.</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Logement en résidence CROUS ?</label>
+              <select class="form-input" id="eligLogementCrous">
+                <option value="non">Non — logement privé</option>
+                <option value="oui">Oui — résidence CROUS</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-section-title">Autres situations</div>
+          <div class="settings-grid">
+            <div class="form-group">
+              <label class="form-label">Situation de handicap reconnue ?</label>
+              <select class="form-input" id="eligHandicap">
+                <option value="non">Non</option>
+                <option value="oui">Oui</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Pratiquez-vous un sport en club ?</label>
+              <select class="form-input" id="eligPratiqueSport">
+                <option value="non">Non</option>
+                <option value="oui">Oui</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Projet de mobilité internationale ?</label>
+              <select class="form-input" id="eligMobilite">
+                <option value="non">Non</option>
+                <option value="oui">Oui (Erasmus+ ou autre)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="save-bar" style="padding-top:16px;">
+            <button class="btn btn-primary" onclick="saveEligibiliteForm()">🔍 Calculer mon éligibilité</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Résumé éligibilité -->
+      <div class="card">
+        <div class="card-header"><div class="card-title">🎯 Mes aides potentielles</div></div>
+        <div class="card-body">
+          <div id="eligSummary">
+            <div style="text-align:center; color:var(--gray-400); padding:40px 20px;">
+              <div style="font-size:36px; margin-bottom:12px;">📋</div>
+              <div style="font-size:14px;">Remplissez le formulaire et cliquez sur <strong>Calculer mon éligibilité</strong> pour voir vos aides.</div>
+            </div>
+          </div>
+          <div style="margin-top:16px; border-top:1px solid var(--gray-100); padding-top:16px;">
+            <button class="btn btn-outline" style="width:100%; font-size:13px;" onclick="navigate('aides')">
+              🏛️ Voir toutes les aides en détail
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ MA SIMULATION BANCAIRE ═══════════════════════════════ -->
+  <div class="page" id="page-simulation">
+    <div class="alert alert-info">🏦 Personnalisez votre compte bancaire et simulez votre historique financier mois par mois.</div>
+
+    <!-- Solde actuel -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-header"><div class="card-title">💳 Solde actuel du compte</div></div>
+      <div class="card-body">
+        <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+          <div class="form-group" style="flex:1; min-width:200px; margin:0;">
+            <label class="form-label">Montant du solde (€)</label>
+            <input class="form-input" id="simSolde" type="number" placeholder="Ex : 1240" />
+          </div>
+          <button class="btn btn-primary" onclick="updateSolde()" style="white-space:nowrap;">Mettre à jour le solde</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ajouter un mois -->
+    <div class="card" style="margin-bottom:20px;">
+      <div class="card-header"><div class="card-title">➕ Ajouter un mois à l'historique</div></div>
+      <div class="card-body">
+        <div style="display:flex; gap:12px; align-items:flex-end; flex-wrap:wrap;">
+          <div class="form-group" style="flex:2; min-width:140px; margin:0;">
+            <label class="form-label">Mois (ex : Juil 2025)</label>
+            <input class="form-input" id="simMonth" type="text" placeholder="Juil 2025" />
+          </div>
+          <div class="form-group" style="flex:1; min-width:120px; margin:0;">
+            <label class="form-label">Revenus (€)</label>
+            <input class="form-input" id="simRevenus" type="number" placeholder="850" />
+          </div>
+          <div class="form-group" style="flex:1; min-width:120px; margin:0;">
+            <label class="form-label">Dépenses (€)</label>
+            <input class="form-input" id="simDepenses" type="number" placeholder="700" />
+          </div>
+          <button class="btn btn-primary" onclick="addSimMonth()" style="white-space:nowrap;">Ajouter</button>
+        </div>
+        <div class="form-hint" style="margin-top:8px;">Le solde de fin de mois est calculé automatiquement à partir du mois précédent.</div>
+      </div>
+    </div>
+
+    <!-- Graphique + tableau -->
+    <div class="grid-2" style="margin-bottom:20px; align-items:start;">
+      <div class="card">
+        <div class="card-header"><div class="card-title">📈 Évolution mensuelle</div></div>
+        <div class="card-body"><div id="simChart"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">📅 Historique mois par mois</div></div>
+        <div class="card-body" style="padding:0;">
+          <table class="tx-table">
+            <thead>
+              <tr>
+                <th>Mois</th>
+                <th>Revenus</th>
+                <th>Dépenses</th>
+                <th>Épargne</th>
+                <th>Solde</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="simTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Résumé annuel -->
+    <div>
+      <div class="form-section-title">Résumé par année</div>
+      <div id="simAnnual"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ PARAMÈTRES ═══════════════════════════════ -->
+  <div class="page" id="page-compte">
+    <div id="saveAlert" style="display:none;" class="alert alert-success">✅ Modifications enregistrées avec succès !</div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">⚙️ Paramètres du compte</div></div>
+      <div class="card-body">
+        <div class="form-section-title">Informations personnelles</div>
+        <div class="settings-grid">
+          <div class="form-group"><label class="form-label">Prénom</label><input class="form-input" id="settPrenom" value="Alex" /></div>
+          <div class="form-group"><label class="form-label">Nom</label><input class="form-input" id="settNom" value="Dubois" /></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="settEmail" type="email" value="alex.dubois@univ.fr" /></div>
+          <div class="form-group"><label class="form-label">Téléphone</label><input class="form-input" id="settTel" value="06 12 34 56 78" /></div>
+        </div>
+
+        <div class="form-section-title">Situation financière</div>
+        <div class="settings-grid">
+          <div class="form-group">
+            <label class="form-label">Solde du compte (€)</label>
+            <input class="form-input" id="settSolde" type="number" value="1240" />
+            <div class="form-hint">Modifiez ce montant pour voir les recommandations évoluer</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Revenus mensuels nets (€)</label>
+            <input class="form-input" id="settRevenus" type="number" value="850" />
+            <div class="form-hint">Bourse + job étudiant + aides</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Loyer / Résidence (€)</label>
+            <input class="form-input" id="settLoyer" type="number" value="380" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Objectif d'épargne mensuel (€)</label>
+            <input class="form-input" id="settObjectifEpargne" type="number" value="100" />
+          </div>
+        </div>
+
+        <div class="form-section-title">Profil de risque &amp; objectifs</div>
+        <div class="settings-grid">
+          <div class="form-group">
+            <label class="form-label">Profil investisseur</label>
+            <select class="form-input" id="settProfil">
+              <option value="prudent" selected>Prudent</option>
+              <option value="equilibre">Équilibré</option>
+              <option value="dynamique">Dynamique</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Situation familiale</label>
+            <select class="form-input" id="settFamille">
+              <option value="celibataire" selected>Célibataire</option>
+              <option value="couple">En couple</option>
+              <option value="famille">Famille avec enfants</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Objectif principal</label>
+            <select class="form-input" id="settObjectif">
+              <option value="epargne" selected>Constituer une épargne</option>
+              <option value="retraite">Préparer la retraite</option>
+              <option value="immobilier">Achat immobilier</option>
+              <option value="voyage">Voyage / Projet</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Horizon d'investissement</label>
+            <select class="form-input" id="settHorizon">
+              <option value="court" selected>Court terme (&lt; 2 ans)</option>
+              <option value="moyen">Moyen terme (2–5 ans)</option>
+              <option value="long">Long terme (&gt; 5 ans)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="save-bar">
+        <button class="btn btn-outline" onclick="resetSettings()">Annuler</button>
+        <button class="btn btn-primary" onclick="saveSettings()">💾 Enregistrer les modifications</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script type="module" src="/src/main.js"></script>
+</body>
+</html>
