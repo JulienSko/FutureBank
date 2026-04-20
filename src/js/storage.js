@@ -1,4 +1,4 @@
-import { state, categories, accountHistory } from './data.js';
+import { state, categories, accountHistory, accounts } from './data.js';
 
 export function saveAll() {
   try {
@@ -20,6 +20,12 @@ export function loadAll() {
     if (savedCats) {
       const cats = JSON.parse(savedCats);
       categories.splice(0, categories.length, ...cats);
+    }
+
+    const savedAccounts = localStorage.getItem('fb_accounts');
+    if (savedAccounts) {
+      const accs = JSON.parse(savedAccounts);
+      accounts.splice(0, accounts.length, ...accs);
     }
 
     const savedHistory = localStorage.getItem('fb_history');

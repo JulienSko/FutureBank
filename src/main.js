@@ -6,6 +6,7 @@ import { saveBudgetEditor, addBudgetCategory, deleteBudgetCategory } from './js/
 import { saveSettings, resetSettings }                        from './js/pages/settings.js';
 import { saveEligibiliteForm, toggleEchelon, autoCalcEchelon } from './js/pages/eligibilite.js';
 import { addSimMonth, deleteSimMonth, updateSolde }           from './js/pages/simulation.js';
+import { openAddCompteModal, closeAddCompteModal, addCompte, deleteCompte } from './js/pages/comptes.js';
 import { loadAll, toggleTheme, resetAll }                     from './js/storage.js';
 
 window.navigate              = navigate;
@@ -24,6 +25,20 @@ window.deleteSimMonth        = deleteSimMonth;
 window.updateSolde           = updateSolde;
 window.toggleTheme           = toggleTheme;
 window.resetAll              = resetAll;
+window.openAddCompteModal   = openAddCompteModal;
+window.closeAddCompteModal  = closeAddCompteModal;
+window.addCompte            = addCompte;
+window.deleteCompte         = deleteCompte;
+
+// Mobile sidebar
+window.toggleSidebar = function() {
+  document.querySelector(".sidebar").classList.toggle("open");
+  document.getElementById("sidebarOverlay").classList.toggle("open");
+};
+window.closeSidebar = function() {
+  document.querySelector(".sidebar").classList.remove("open");
+  document.getElementById("sidebarOverlay").classList.remove("open");
+};
 window.saveBudgetEditor      = saveBudgetEditor;
 window.addBudgetCategory     = addBudgetCategory;
 window.deleteBudgetCategory  = deleteBudgetCategory;

@@ -8,6 +8,9 @@
   <link rel="stylesheet" href="/src/css/main.css" />
 </head>
 <body>
+<!-- Sidebar overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
 <nav class="sidebar">
   <div class="sidebar-logo">
     <div class="logo-icon">🎓</div>
@@ -16,16 +19,17 @@
   <div class="sidebar-nav">
     <div class="nav-section-label">Principal</div>
     <button class="nav-item active" data-page="dashboard"><span class="nav-icon">📊</span><span>Tableau de bord</span></button>
+    <button class="nav-item" data-page="comptes"><span class="nav-icon">🏦</span><span>Mes comptes</span></button>
     <button class="nav-item" data-page="transactions"><span class="nav-icon">💸</span><span>Transactions</span></button>
     <button class="nav-item" data-page="budget"><span class="nav-icon">📅</span><span>Budget prévisionnel</span></button>
-    <div class="nav-section-label" style="margin-top:12px;">IA & Conseils</div>
+    <div class="nav-section-label" style="margin-top:12px;">IA &amp; Conseils</div>
     <button class="nav-item" data-page="conseiller"><span class="nav-icon">🤖</span><span>Conseiller IA</span></button>
     <button class="nav-item" data-page="recommandations"><span class="nav-icon">💡</span><span>Recommandations</span></button>
     <button class="nav-item" data-page="aides"><span class="nav-icon">🏛️</span><span>Aides Étudiantes</span></button>
     <div class="nav-section-label" style="margin-top:12px;">Mon Espace Étudiant</div>
     <button class="nav-item" data-page="eligibilite"><span class="nav-icon">📋</span><span>Mon Profil Étudiant</span></button>
-    <button class="nav-item" data-page="simulation"><span class="nav-icon">🏦</span><span>Ma Simulation</span></button>
-    <button class="nav-item" data-page="compte"><span class="nav-icon">⚙️</span><span>Paramètres du compte</span></button>
+    <button class="nav-item" data-page="simulation"><span class="nav-icon">📈</span><span>Ma Simulation</span></button>
+    <button class="nav-item" data-page="compte"><span class="nav-icon">⚙️</span><span>Paramètres</span></button>
   </div>
   <div class="sidebar-user">
     <div class="user-avatar" id="avatarInitials">AD</div>
@@ -38,7 +42,8 @@
 
 <div class="main">
   <div class="topbar">
-    <div>
+    <button class="hamburger" onclick="toggleSidebar()" aria-label="Menu">☰</button>
+    <div style="flex:1; min-width:0;">
       <div class="topbar-title" id="topbarTitle">Tableau de bord</div>
       <div class="topbar-date" id="topbarDate"></div>
     </div>
@@ -87,6 +92,11 @@
     </div>
   </div>
 
+  <!-- ═══════════════════════════════ COMPTES ═══════════════════════════════ -->
+  <div class="page" id="page-comptes">
+    <div id="comptesContent"></div>
+  </div>
+
   <!-- ═══════════════════════════════ TRANSACTIONS ═══════════════════════════════ -->
   <div class="page" id="page-transactions">
     <div class="card" style="margin-bottom:20px;">
@@ -133,19 +143,22 @@
           <div style="font-size:13px; color:var(--gray-600); line-height:1.6;" id="scoreMsg"></div>
         </div>
       </div>
+    </div><div class="card" style="margin-bottom:20px; border: 1px solid rgba(255,255,255,0.1);">
+  <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 20px;">
+    <div class="card-title" style="margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 10px;">
+      <span>✏️</span> Gérer mes catégories & budgets
     </div>
-    <div class="card" style="margin-bottom:20px;">
-      <div class="card-header">
-        <div class="card-title">✏️ Gérer mes catégories & budgets</div>
-        <button class="btn btn-outline" style="font-size:12px; padding:6px 14px;"
-          onclick="this.closest('.card').querySelector('.budget-editor-body').classList.toggle('hidden-section')">
-          Afficher / Masquer
-        </button>
-      </div>
-      <div class="card-body budget-editor-body hidden-section">
-        <div id="budgetEditor"></div>
-      </div>
-    </div>
+    <button class="btn btn-outline" 
+            style="font-size:12px; padding:6px 14px; border-radius: 8px; cursor: pointer;"
+            onclick="this.closest('.card').querySelector('.budget-editor-body').classList.toggle('hidden-section')">
+      Afficher / Masquer
+    </button>
+  </div>
+  
+  <div class="card-body budget-editor-body hidden-section" style="transition: all 0.3s ease;">
+    <div id="budgetEditor"></div>
+  </div>
+</div>
     <div class="card" style="margin-bottom:20px;">
       <div class="card-header"><div class="card-title">📊 Prévisionnel vs Réel — ce mois</div></div>
       <div class="card-body"><div id="previsReelGrid"></div></div>
@@ -505,6 +518,32 @@
   </div>
 
 </div>
+
+<!-- ═══════════════════════════════ MOBILE BOTTOM NAV ═══════════════════════════════ -->
+<nav class="mobile-nav" id="mobileNav">
+  <button class="mobile-nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
+    <span class="mn-icon">📊</span>
+    <span>Accueil</span>
+  </button>
+  <button class="mobile-nav-item" data-page="comptes" onclick="navigate('comptes')">
+    <span class="mn-icon">🏦</span>
+    <span>Comptes</span>
+  </button>
+  <button class="mobile-nav-item" data-page="transactions" onclick="navigate('transactions')">
+    <span class="mn-icon">💸</span>
+    <span>Transactions</span>
+  </button>
+  <button class="mobile-nav-item" data-page="budget" onclick="navigate('budget')">
+    <span class="mn-icon">📅</span>
+    <span>Budget</span>
+  </button>
+  <button class="mobile-nav-item" data-page="conseiller" onclick="navigate('conseiller')">
+    <span class="mn-icon">🤖</span>
+    <span>IA</span>
+  </button>
+</nav>
+
+
 
 <script type="module" src="/src/main.js"></script>
 </body>

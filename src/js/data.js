@@ -73,3 +73,8 @@ export const accountHistory = [
   { month: 'Mai 2025', solde: 1155, revenus: 850,  depenses: 695 },
   { month: 'Jun 2025', solde: 1240, revenus: 1050, depenses: 780 },
 ];
+
+export const accounts = [
+  { id: 1, name: 'Compte Étudiant', bank: 'BNP Paribas',  type: 'courant', balance: 1240, icon: '💳', color: '#2563eb' },
+  { id: 2, name: 'Livret A',        bank: 'BNP Paribas',  type: 'epargne', balance: 850,  icon: '🏦', color: '#10b981' },
+];

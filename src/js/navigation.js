@@ -4,9 +4,11 @@ import { renderAides }            from './pages/aides.js';
 import { loadSettingsForm }       from './pages/settings.js';
 import { loadEligibiliteForm, renderEligibiliteSummary } from './pages/eligibilite.js';
 import { renderSimulation }       from './pages/simulation.js';
+import { renderComptes }          from './pages/comptes.js';
 
 export const pageNames = {
   dashboard:       'Tableau de bord',
+  comptes:         'Mes comptes',
   transactions:    'Transactions',
   budget:          'Budget prévisionnel',
   conseiller:      'Conseiller IA Étudiant',
@@ -24,12 +26,21 @@ export function navigate(page) {
   document.querySelector(`[data-page="${page}"]`).classList.add('active');
   document.getElementById('topbarTitle').textContent = pageNames[page];
 
+  // Sync mobile bottom nav
+  document.querySelectorAll('.mobile-nav-item').forEach(b => {
+    b.classList.toggle('active', b.dataset.page === page);
+  });
+
+  // Close sidebar on mobile
+  if (window.closeSidebar) window.closeSidebar();
+
   if (page === 'recommandations') renderRecommandations();
   if (page === 'aides')           renderAides();
   if (page === 'budget')          renderBudget();
   if (page === 'compte')          loadSettingsForm();
   if (page === 'eligibilite')     { loadEligibiliteForm(); renderEligibiliteSummary(); }
   if (page === 'simulation')      renderSimulation();
+  if (page === 'comptes')         renderComptes();
 }
 
 export function initNavigation() {

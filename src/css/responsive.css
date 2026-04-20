@@ -1,13 +1,54 @@
-@media (max-width: 900px) {
-  .sidebar { width: 60px; }
-  .sidebar-logo .logo-text,
-  .nav-item span,
-  .nav-section-label,
-  .sidebar-user .user-info { display: none; }
-  .main { margin-left: 60px; }
+@media (max-width: 768px) {
+  /* ── Sidebar slide-in ── */
+  .sidebar {
+    transform: translateX(-100%);
+    width: 260px;
+    box-shadow: 4px 0 24px rgba(0,0,0,.25);
+  }
+  .sidebar.open { transform: translateX(0); }
+
+  /* ── Main content takes full width ── */
+  .main {
+    margin-left: 0;
+    padding-bottom: 72px; /* room for bottom nav */
+  }
+
+  /* ── Topbar ── */
+  .topbar { padding: 0 14px; height: 52px; }
+  .topbar-date { display: none; }
+  .hamburger { display: flex; align-items: center; }
+
+  /* ── Pages ── */
+  .page { padding: 14px; }
+
+  /* ── Grids → single column ── */
   .grid-2,
   .grid-3-1,
   .reco-grid,
   .settings-grid,
   .forecast-grid { grid-template-columns: 1fr; }
+
+  /* Keep stat grid 2 cols on mobile */
+  .stat-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* ── Show bottom nav ── */
+  .mobile-nav { display: flex; }
+
+  /* ── Cards ── */
+  .card-body { padding: 14px; }
+  .card-header { padding: 12px 14px 10px; }
+
+  /* ── Transactions table ── */
+  .tx-table th:nth-child(3),
+  .tx-table td:nth-child(3) { display: none; }
+
+  /* ── AI page ── */
+  .api-banner { flex-direction: column; gap: 10px; }
+  .api-key-input { width: 100%; }
+}
+
+@media (max-width: 400px) {
+  .stat-grid { grid-template-columns: 1fr; }
+  .stat-card { padding: 14px; }
+  .stat-value { font-size: 22px; }
 }
